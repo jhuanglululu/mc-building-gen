@@ -8,7 +8,7 @@ from data.state import BlockState, get_state
 
 def unpack_block(value: np.uint32) -> Tuple[int, BlockState]:
     block = int(value >> 16)
-    state = (value & 0xffff).astype(np.uint16)
+    state = np.uint16(value & 0xffff)
     return block, get_state(block, state)
 
 def read_structure(path: str | Path):
