@@ -2,7 +2,7 @@ import torch.nn as nn
 
 
 class ChunkDecoder(nn.Module):
-    def __init__(self, d_latent: int, d_block: int):
+    def __init__(self, d_latent: int, d_chunk: int):
         super().__init__()
 
         self.fc = nn.Sequential(
@@ -20,7 +20,7 @@ class ChunkDecoder(nn.Module):
             nn.ConvTranspose3d(256, 128, 4, stride=2, padding=1),
             nn.BatchNorm3d(128),
             nn.SiLU(),
-            nn.ConvTranspose3d(128, d_block, 4, stride=2, padding=1),
+            nn.ConvTranspose3d(128, d_chunk, 4, stride=2, padding=1),
         )
 
     def forward(self, z):
