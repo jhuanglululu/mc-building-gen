@@ -8,8 +8,9 @@ from data.state import BlockState, get_state
 
 def unpack_block(value: np.uint32) -> Tuple[int, BlockState]:
     block = int(value >> 16)
-    state = np.uint16(value & 0xffff)
+    state = np.uint16(value & 0xFFFF)
     return block, get_state(block, state)
+
 
 def read_structure(path: str | Path):
     with open(path, 'rb') as f:
@@ -24,8 +25,4 @@ def read_structure(path: str | Path):
         data = np.frombuffer(f.read(block_count * 4), dtype=np.uint32)
         data = data.reshape((x, y, z))
 
-    return {
-        'size': (x, y, z),
-        'description': description,
-        'blocks': data
-    }
+    return {'size': (x, y, z), 'description': description, 'blocks': data}

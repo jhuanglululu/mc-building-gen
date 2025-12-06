@@ -8,13 +8,13 @@ from data.decode import read_structure
 
 
 class ChunkDataset(Dataset):
-    def __init__(self, data_dir: str, chunk_size: int = 16):
+    def __init__(self, data_dir: str, chunk_size: int):
         self.chunk_size = chunk_size
         self.chunks = []  # (path, x0, y0, z0)
 
-        for path in Path(data_dir).glob('*.bin'):
+        for path in Path(data_dir).glob("*.bin"):
             structure = read_structure(path)
-            x, y, z = structure['size']
+            x, y, z = structure["size"]
 
             for x0 in range(0, x, chunk_size):
                 for y0 in range(0, y, chunk_size):
@@ -27,16 +27,16 @@ class ChunkDataset(Dataset):
     def __getitem__(self, idx):
         path, x0, y0, z0 = self.chunks[idx]
         structure = read_structure(path)
-        blocks = structure['blocks']
+        blocks = structure["blocks"]
 
         chunk = self._extract_chunk(blocks, x0, y0, z0)
 
-        block_ids = (chunk >> 16).astype('int32')
-        states = (chunk & 0xffff).astype('int32')
+        block_ids = (chunk >> 16).astype("int32")
+        states = (chunk & 0xFFFF).astype("int32")
 
         return {
-            'block_ids': torch.from_numpy(block_ids),
-            'states': torch.from_numpy(states),
+            "block_ids": torch.from_numpy(block_ids),
+            "states": torch.from_numpy(states),
         }
 
     def _extract_chunk(self, blocks, x0, y0, z0):
@@ -51,7 +51,7 @@ class ChunkDataset(Dataset):
 
         if chunk.shape != (cs, cs, cs):
             padded = np.zeros((cs, cs, cs), dtype=np.uint32)
-            padded[:chunk.shape[0], :chunk.shape[1], :chunk.shape[2]] = chunk
+            padded[: chunk.shape[0], : chunk.shape[1], : chunk.shape[2]] = chunk
             chunk = padded
 
         return chunk
