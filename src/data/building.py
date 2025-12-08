@@ -1,11 +1,12 @@
+from data.structure import read_structure
 from dataclasses import dataclass
 from pathlib import Path
 from typing import override
-import numpy as np
+
 import torch
 from torch.utils.data import Dataset
-from data.decode import read_structure
-from data.state.helpers import get_state
+
+from data.state import parse_states
 
 
 @dataclass
@@ -13,10 +14,7 @@ class BuildingData:
     description: str
     grid_size: tuple[int, int, int]
     block_ids: torch.Tensor
-    facing: torch.Tensor
-    half: torch.Tensor
-    shape: torch.Tensor
-    waterlogged: torch.Tensor
+    states: dict[str, torch.Tensor]
 
 
 class BuildingDataset(Dataset[BuildingData]):
@@ -35,26 +33,7 @@ class BuildingDataset(Dataset[BuildingData]):
         ids = (blocks >> 16).astype("int64")
         raw_states = (blocks & 0xFFFF).astype("uint16")
 
-        shape = blocks.shape
-        flat_ids = ids.flatten()
-        flat_states = raw_states.flatten()
-
-        facing = np.zeros(len(flat_ids), dtype=np.int64)
-        half = np.zeros(len(flat_ids), dtype=np.int64)
-        shape_attr = np.zeros(len(flat_ids), dtype=np.int64)
-        waterlogged = np.zeros(len(flat_ids), dtype=np.int64)
-
-        for i, (block_id, state) in enumerate(zip(flat_ids, flat_states)):
-            parsed = get_state(int(block_id), np.uint16(state))
-            facing[i] = parsed.facing.value
-            half[i] = parsed.half.value
-            shape_attr[i] = parsed.shape.value
-            waterlogged[i] = parsed.waterlogged.value
-
-        facing = facing.reshape(shape)
-        half = half.reshape(shape)
-        shape_attr = shape_attr.reshape(shape)
-        waterlogged = waterlogged.reshape(shape)
+        states = parse_states(ids, raw_states)
 
         x, y, z = structure.size
         grid_size = (
@@ -67,8 +46,5 @@ class BuildingDataset(Dataset[BuildingData]):
             description=structure.description,
             grid_size=grid_size,
             block_ids=torch.from_numpy(ids),
-            facing=torch.from_numpy(facing),
-            half=torch.from_numpy(half),
-            shape=torch.from_numpy(shape_attr),
-            waterlogged=torch.from_numpy(waterlogged),
+            states={k: torch.from_numpy(v) for k, v in states.items()},
         )

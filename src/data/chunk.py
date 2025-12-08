@@ -1,3 +1,4 @@
+from data.structure import read_structure
 from numpy import uint32
 from numpy.typing import NDArray
 from pathlib import Path
@@ -6,8 +7,6 @@ from typing import override
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-
-from data.decode import read_structure
 
 
 class ChunkDataset(Dataset[torch.Tensor]):
