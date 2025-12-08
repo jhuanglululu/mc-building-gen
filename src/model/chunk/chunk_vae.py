@@ -6,11 +6,11 @@ from model.chunk.chunk_encoder import ChunkEncoder
 
 
 class ChunkVAE(nn.Module):
-    def __init__(self, vocab_size: int, d_chunk: int, d_block: int):
+    def __init__(self, vocab_size: int, d_latent: int, d_embed: int):
         super().__init__()
-        self.embed = nn.Embedding(vocab_size, d_block)
-        self.encoder = ChunkEncoder(d_block, d_chunk)
-        self.decoder = ChunkDecoder(d_chunk, d_block)
+        self.embed = nn.Embedding(vocab_size, d_embed)
+        self.encoder = ChunkEncoder(d_embed, d_latent)
+        self.decoder = ChunkDecoder(d_latent, d_embed)
 
     def reparameterize(self, mu, logvar):
         std = torch.exp(0.5 * logvar)
@@ -31,7 +31,8 @@ class ChunkVAE(nn.Module):
         return logits, mu, logvar
 
     def encode(self, x):
-        mu, _ = self.encoder(x)
+        embedded = self.embed(x).permute(0, 4, 1, 2, 3)
+        mu, _ = self.encoder(embedded)
         return mu
 
     def decode(self, z):

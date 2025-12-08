@@ -1,4 +1,7 @@
+from numpy import uint32
+from numpy.typing import NDArray
 from pathlib import Path
+from typing import override
 
 import numpy as np
 import torch
@@ -7,14 +10,14 @@ from torch.utils.data import Dataset
 from data.decode import read_structure
 
 
-class ChunkDataset(Dataset):
+class ChunkDataset(Dataset[torch.Tensor]):
     def __init__(self, data_dir: str, chunk_size: int):
-        self.chunk_size = chunk_size
-        self.chunks = []  # (path, x0, y0, z0)
+        self.chunk_size: int = chunk_size
+        self.chunks: list[tuple[Path, int, int, int]] = []  # (path, x0, y0, z0)
 
         for path in Path(data_dir).glob("*.bin"):
             structure = read_structure(path)
-            x, y, z = structure["size"]
+            x, y, z = structure.size
 
             for x0 in range(0, x, chunk_size):
                 for y0 in range(0, y, chunk_size):
@@ -24,23 +27,21 @@ class ChunkDataset(Dataset):
     def __len__(self):
         return len(self.chunks)
 
-    def __getitem__(self, idx):
-        path, x0, y0, z0 = self.chunks[idx]
+    @override
+    def __getitem__(self, index: int) -> torch.Tensor:
+        path, x0, y0, z0 = self.chunks[index]
         structure = read_structure(path)
-        blocks = structure["blocks"]
+        blocks = structure.blocks
 
         chunk = self._extract_chunk(blocks, x0, y0, z0)
 
         block_ids = (chunk >> 16).astype("int32")
-        states = (chunk & 0xFFFF).astype("int32")
 
-        return {
-            "block_ids": torch.from_numpy(block_ids),
-            "states": torch.from_numpy(states),
-        }
+        return torch.from_numpy(block_ids)
 
-    def _extract_chunk(self, blocks, x0, y0, z0):
+    def _extract_chunk(self, blocks: NDArray[uint32], x0: int, y0: int, z0: int):
         cs = self.chunk_size
+        x: int; y: int; z: int # fmt:skip
         x, y, z = blocks.shape
 
         x_end = min(x0 + cs, x)

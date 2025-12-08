@@ -4,7 +4,6 @@ BLOCKS = [
     "<BOS>",
     "<EOS>",
     "<UNK>",
-
     "air",
     # oak
     "oak_log",
@@ -41,7 +40,9 @@ BLOCKS = [
 BLOCK_TO_ID = {block: id for id, block in enumerate(BLOCKS)}
 ID_TO_BLOCK = {id: block for id, block in enumerate(BLOCKS)}
 
+
 def export_blocks(path: str):
     import json
+
     with open(path, "w+") as f:
-        f.write(json.dumps(BLOCK_TO_ID, indent=4))
+        _ = f.write(json.dumps(BLOCK_TO_ID, indent=4))

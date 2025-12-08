@@ -7,6 +7,7 @@ dependencies = [
     "einops>=0.8.1",
     "fastapi>=0.123.9",
     "numpy>=2.3.5",
+    "rich>=14.2.0",
     "torch>=2.9.1",
 ]
 
@@ -14,3 +15,12 @@ dependencies = [
 dev = [
     "basedpyright>=1.35.0",
 ]
+
+[tool.basedpyright]
+executionEnvironments = [
+    { root = "src" }
+]
+reportUnknownMemberType = "none"
+reportUnknownArgumentType = "none"
+reportAttributeAccessIssue = "none"
+reportAny = "none"
