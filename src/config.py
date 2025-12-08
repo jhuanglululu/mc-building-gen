@@ -1,23 +1,26 @@
 from configparser import ConfigParser
 from dataclasses import dataclass, fields
 import os
+from typing import Any, TypeVar, Callable
+
+T = TypeVar("T")
 
 
-def _config_loader(folder: str, category: str):
-    def decorator(cls):
-        def read(root: str, name: str):
+def _config_loader(folder: str, category: str) -> Callable[[type[T]], type[T]]:
+    def decorator(cls: type[T]) -> type[T]:
+        def read(root: str, name: str) -> T:
             path = os.path.join(root, folder, name)
             if not os.path.exists(path):
                 raise ValueError(f"File \"{path}\" does not exist")
 
             parser = ConfigParser()
-            parser.read(path)
+            _ = parser.read(path)
 
-            kwargs = dict()
+            kwargs: dict[str, Any] = dict()  # pyright:ignore[reportExplicitAny]
             if category not in parser:
                 raise ValueError(f"Category {category} not found in {folder}/{name}")
 
-            for f in fields(cls):
+            for f in fields(cls):  # pyright:ignore[reportArgumentType]
                 if f.name not in parser[category]:
                     raise ValueError(
                         f"Field {f.name} not found in {folder}/{name}/{category}"
