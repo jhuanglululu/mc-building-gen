@@ -40,7 +40,9 @@ class ChunkDataset(Dataset[torch.Tensor]):
 
     def _extract_chunk(self, blocks: NDArray[uint32], x0: int, y0: int, z0: int):
         cs = self.chunk_size
-        x: int; y: int; z: int # fmt:skip
+        x: int
+        y: int
+        z: int  # fmt:skip
         x, y, z = blocks.shape
 
         x_end = min(x0 + cs, x)

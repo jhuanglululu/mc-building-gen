@@ -1,12 +1,22 @@
-from config import VAETraningConfig, VAECheckpointConfig, VAEParameterConfig, DataConfig
+from argparse import ArgumentParser
+from train import train
 
 
 def main():
-    print(VAETraningConfig.read("config", "overfit.ini"))  # ty: ignore
-    print(VAECheckpointConfig.read("config", "overfit.ini"))  # ty: ignore
-    print(VAEParameterConfig.read("config", "overfit.ini"))  # ty: ignore
-    print(DataConfig.read("config", "overfit.ini"))  # ty: ignore
+    parser = ArgumentParser()
+    parser.add_argument(
+        '--config-name', type=str, required=True, help='Model config names'
+    )
+    parser.add_argument(
+        '--config-root',
+        type=str,
+        default='config',
+        help='Config folder path. Default: config',
+    )
+    args = parser.parse_args()
+
+    train(args.config_root, args.config_name)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

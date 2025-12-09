@@ -7,7 +7,7 @@ from model.chunk.chunk_decoder import ChunkDecoder
 from model.chunk.chunk_encoder import ChunkEncoder
 
 
-class ChunkVAE(Module):
+class ChunkVae(Module):
     def __init__(self, vocab_size: int, d_latent: int, d_embed: int):
         super().__init__()
         self.embed: Embedding = Embedding(vocab_size, d_embed)

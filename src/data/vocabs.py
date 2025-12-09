@@ -45,4 +45,4 @@ def export_blocks(path: str):
     import json
 
     with open(path, "w+") as f:
-        _ = f.write(json.dumps(BLOCK_TO_ID, indent=4))
+        f.write(json.dumps(BLOCK_TO_ID, indent=4))

@@ -12,12 +12,12 @@ STATE_PARSERS: list[Callable[[BlockIds, RawStates, Outputs], None]] = list()
 ALL_STATE_FIELDS: set[str] = set()
 
 
-def _register_parser(filters: list[str], fields: list[tuple[str, int]]) -> None:
+def _register_parser(filters: list[str], fields: list[tuple[str, int]]):
     filter_ids = np.array([BLOCK_TO_ID[filter] for filter in filters], dtype=np.int64)
 
     ALL_STATE_FIELDS.update(name for name, _ in fields)
 
-    def parser(ids: BlockIds, raw_states: RawStates, outputs: Outputs) -> None:
+    def parser(ids: BlockIds, raw_states: RawStates, outputs: Outputs):
         mask = np.isin(ids, filter_ids)
         if not mask.any():
             return
@@ -35,18 +35,18 @@ def _register_parser(filters: list[str], fields: list[tuple[str, int]]) -> None:
 
 _register_parser(
     filters=[
-        'oak_stairs',
-        'birch_stairs',
-        'spruce_stairs',
-        'stone_stairs',
-        'cobblestone_stairs',
-        'stone_brick_stairs',
+        "oak_stairs",
+        "birch_stairs",
+        "spruce_stairs",
+        "stone_stairs",
+        "cobblestone_stairs",
+        "stone_brick_stairs",
     ],
     fields=[
-        ('facing', 2),
-        ('half', 1),
-        ('shape', 3),
-        ('waterlogged', 1),
+        ("facing", 2),
+        ("half", 1),
+        ("shape", 3),
+        ("waterlogged", 1),
     ],
 )
 
