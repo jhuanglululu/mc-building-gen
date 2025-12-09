@@ -14,7 +14,7 @@ log = logging.getLogger('training')
 class NumberHighlighter(RegexHighlighter):
     highlights = [
         r'(?P<keyword>(?:Epoch|Loss|Time|Total|ETA))',
-        r'(?P<posnum>\b(?:\d+(?:\.\d*)?|\.\d+))',
+        r'\b(?P<posnum>(?:\d+(?:\.\d*)?|\.\d+))',
         r'\d(?P<timeunit>(?:h|m|s)\b)',
     ]
 
