@@ -1,0 +1,82 @@
+{
+	"blocks": [
+		"<PAD>",
+		"<BOS>",
+		"<EOS>",
+		"<UNK>",
+		"air",
+		"oak_log",
+		"oak_planks",
+		"oak_stairs",
+		"oak_leaves",
+		"birch_log",
+		"birch_planks",
+		"birch_stairs",
+		"birch_leaves",
+		"spruce_log",
+		"spruce_planks",
+		"spruce_stairs",
+		"spruce_leaves",
+		"stone",
+		"stone_stairs",
+		"cobblestone",
+		"cobblestone_stairs",
+		"stone_bricks",
+		"stone_brick_stairs",
+		"coal_ore",
+		"iron_ore",
+		"gold_ore",
+		"diamond_ore",
+		"glass",
+		"glass_pane"
+	],
+	"schemas": {
+		"stairs": {
+			"blocks": [
+				"oak_stairs",
+				"birch_stairs",
+				"spruce_stairs",
+				"stone_stairs"
+			],
+			"fields": [
+				{
+					"name": "facing",
+					"bits": 2,
+					"values": [
+						"north",
+						"south",
+						"west",
+						"east"
+					]
+				},
+				{
+					"name": "half",
+					"bits": 1,
+					"values": [
+						"bottom",
+						"top"
+					]
+				},
+				{
+					"name": "shape",
+					"bits": 3,
+					"values": [
+						"straight",
+						"inner_left",
+						"inner_right",
+						"outer_left",
+						"outer_right"
+					]
+				},
+				{
+					"name": "waterlogged",
+					"bits": 1,
+					"values": [
+						"false",
+						"true"
+					]
+				}
+			]
+		}
+	}
+}

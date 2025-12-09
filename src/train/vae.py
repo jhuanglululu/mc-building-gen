@@ -18,11 +18,10 @@ from rich.logging import RichHandler
 import logging
 
 from config import DataConfig, VaeSaveConfig, VaeParamConfig, VaeTrainConfig
-from data.chunk import ChunkDataset
-from data.vocabs import BLOCKS
+from data import ChunkDataset
 from model import ChunkVae, vae_loss
 
-# Setup logging
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(message)s',
@@ -34,11 +33,11 @@ console = Console()
 
 class GracefulExit:
     def __init__(self):
-        self.should_stop = False
+        self.should_stop: bool = False
         signal.signal(signal.SIGINT, self._handler)
         signal.signal(signal.SIGTERM, self._handler)
 
-    def _handler(self, signum: int, frame: Any):
+    def _handler(self, _signum: int, _frame: Any):
         if self.should_stop:
             log.warning('Force quit')
             raise SystemExit(1)
@@ -87,6 +86,8 @@ def train_vae(
     param_cfg: VaeParamConfig,
     train_cfg: VaeTrainConfig,
 ):
+    from data import BLOCK_TO_ID
+
     graceful = GracefulExit()
 
     dataset = ChunkDataset(data_cfg.data_dir, chunk_size=16)
@@ -100,7 +101,7 @@ def train_vae(
     log.info(f'Dataset: {len(dataset)} chunks')
 
     model = ChunkVae(
-        vocab_size=len(BLOCKS),
+        vocab_size=len(BLOCK_TO_ID),
         d_latent=param_cfg.d_latent,
         d_embed=param_cfg.d_embed,
     ).to(device)

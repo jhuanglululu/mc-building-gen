@@ -1,9 +1,11 @@
 from argparse import ArgumentParser
-from train import train
 
 
 def main():
     parser = ArgumentParser()
+    parser.add_argument(
+        '--blocks', '-b', type=str, required=True, help='Block list dir'
+    )
     parser.add_argument(
         '--config-name', type=str, required=True, help='Model config names'
     )
@@ -15,7 +17,7 @@ def main():
     )
     args = parser.parse_args()
 
-    train(args.config_root, args.config_name)
+    # train(args.config_root, args.config_name)
 
 
 if __name__ == '__main__':
