@@ -10,4 +10,5 @@ wheels/
 .venv
 
 .claude
-README.md
+AI_README.md
+saves/

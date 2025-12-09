@@ -14,7 +14,7 @@ class ChunkDataset(Dataset[torch.Tensor]):
         self.chunk_size: int = chunk_size
         self.chunks: list[tuple[Path, int, int, int]] = []  # (path, x0, y0, z0)
 
-        for path in Path(data_dir).glob("*.bin"):
+        for path in Path(data_dir).glob('*.bin'):
             structure = read_structure(path)
             x, y, z = structure.size
 
@@ -34,7 +34,7 @@ class ChunkDataset(Dataset[torch.Tensor]):
 
         chunk = self._extract_chunk(blocks, x0, y0, z0)
 
-        block_ids = (chunk >> 16).astype("int32")
+        block_ids = (chunk >> 16).astype('int64')
 
         return torch.from_numpy(block_ids)
 

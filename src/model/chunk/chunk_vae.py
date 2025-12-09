@@ -8,11 +8,16 @@ from model.chunk.chunk_encoder import ChunkEncoder
 
 
 class ChunkVae(Module):
-    def __init__(self, vocab_size: int, d_latent: int, d_embed: int):
+    def __init__(self, vocab_size: int, chunk_size: int, d_latent: int, d_embed: int):
+        from math import log2
+
         super().__init__()
+
+        n_layers = int(log2(chunk_size))
+
         self.embed: Embedding = Embedding(vocab_size, d_embed)
-        self.encoder: ChunkEncoder = ChunkEncoder(d_embed, d_latent)
-        self.decoder: ChunkDecoder = ChunkDecoder(d_latent, d_embed)
+        self.encoder: ChunkEncoder = ChunkEncoder(n_layers, d_embed, d_latent)
+        self.decoder: ChunkDecoder = ChunkDecoder(n_layers, d_latent, d_embed)
 
     def reparameterize(self, mu: Tensor, logvar: Tensor) -> Tensor:
         std = torch.exp(0.5 * logvar)

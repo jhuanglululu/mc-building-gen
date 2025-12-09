@@ -55,6 +55,7 @@ class VaeSaveConfig:
 @_config_loader('vae')
 @dataclass
 class VaeParamConfig:
+    chunk_size: int
     d_latent: int
     d_embed: int
 
@@ -62,6 +63,7 @@ class VaeParamConfig:
 @_config_loader('vae_training')
 @dataclass
 class VaeTrainConfig:
+    num_worker: int
     batch_size: int
     learning_rate: float
     epochs: int
